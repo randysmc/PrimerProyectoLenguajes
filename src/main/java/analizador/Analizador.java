@@ -26,8 +26,8 @@ public class Analizador {
     String palabraLimpia;
     Token tipoToken;
     int cantErroresLexicos;
-    int cantLexemas, cantDigitos, cantDecimales, cantSignosAgrupacion,cantOperadoresAr, cantSignosPunt;
-    
+    int cantLexemas, cantNumeros, cantDecimales, cantSignosAgrupacion, cantOperadoresAr, cantSignosPunt, cantIdentificadores;
+
     public static void main(String[] args) {
         Scanner teclado = new Scanner(System.in);
         int eleccion = 0;
@@ -37,7 +37,7 @@ public class Analizador {
             analizador.inicializarVariables();
             System.out.println("\n\nIngrese la palabra a descomponer");
             String palabraEntrada = teclado.nextLine();
-            palabraEntrada = palabraEntrada+" ";
+            palabraEntrada = palabraEntrada + " ";
             analizador.getPalabraEntrada(palabraEntrada);
             analizador.mostrarResultados();
         }
@@ -52,20 +52,32 @@ public class Analizador {
         arrSignosAgrupacion = new ArrayList();
         arrOperadoresAritmeticos = new ArrayList();
         arrSignosPuntuacion = new ArrayList();
+        arrLexemas = new ArrayList();
         lexema = "";
         estado = 0;
         indice = 0;
         palabraLimpia = "";
-        cantErroresLexicos = 0; cantLexemas=0;
-        cantDigitos=0; cantDecimales=0; 
-        cantSignosAgrupacion=0; cantOperadoresAr=0; 
-        cantSignosPunt=0;
+        cantErroresLexicos = 0;
+        cantLexemas = 0;
+        cantNumeros = 0;
+        cantDecimales = 0;
+        cantSignosAgrupacion = 0;
+        cantOperadoresAr = 0;
+        cantSignosPunt = 0;
+        cantIdentificadores = 0;
 
     }
-    
-    public void mostrarResultados(){
-        System.out.println("cantidad de errores: " +cantErroresLexicos);
-    
+
+    public void mostrarResultados() {
+        System.out.println("cantidad de errores: " + cantErroresLexicos);
+        System.out.println("cantidad de lexemas: " + cantLexemas);
+        System.out.println("cantidad de signos de puntuacion: " + cantSignosPunt);
+        System.out.println("cantidad de signos de agrupacion: " + cantSignosAgrupacion);
+        System.out.println("cantidad de operadores aritmeticos: " + cantOperadoresAr);
+        System.out.println("cantidad de numeros: " + cantNumeros);
+        System.out.println("cantidad de decimales: " + cantDecimales);
+        System.out.println("cantidad de identificadores: " + cantIdentificadores);
+
     }
 
     public void getPalabraEntrada(String palabraEntrada) {
@@ -104,36 +116,36 @@ public class Analizador {
                         estado = 0;
                         //Verificamos si es un caracter de tipo puntuacion
                     } else if ((letra == '.') || (letra == ',') || (letra == ':') || (letra == ';')) {
-                        System.out.println("Vino un signo de puntuacion: '" + letra + "'");
-                        System.out.println("Moviendose al estado 1");
+                        // System.out.println("Vino un signo de puntuacion: '" + letra + "'");
+                        //System.out.println("Moviendose al estado 1");
                         lexema = "" + letra;
                         estado = 1;
 
                         //si es operador aritmetico
                     } else if ((letra == '+') || (letra == '-') || (letra == '*') || (letra == '/') || (letra == '%')) {
-                        System.out.println("Vino un operador aritmetico: '" + letra + "'");
-                        System.out.println("Moviendose al estado 2");
+                        //System.out.println("Vino un operador aritmetico: '" + letra + "'");
+                        //System.out.println("Moviendose al estado 2");
                         lexema = "" + letra;
                         estado = 2;
 
                         //signo de agrupacion
                     } else if ((letra == '(') || (letra == ')') || (letra == '[') || (letra == ']') || (letra == '{') || (letra == '}')) {
-                        System.out.println("Vino un signo de agrupacion: '" + letra + "'");
-                        System.out.println("Moviendose al estado 3");
+                        //System.out.println("Vino un signo de agrupacion: '" + letra + "'");
+                        //System.out.println("Moviendose al estado 3");
                         lexema = "" + letra;
                         estado = 3;
 
                         //si es digito
                     } else if (Character.isDigit(letra)) {
-                        System.out.println("Vino un digito: '" + letra + "'");
-                        System.out.println("Moviendose al estado 4");
+                        //System.out.println("Vino un digito: '" + letra + "'");
+                        //System.out.println("Moviendose al estado 4");
                         lexema = "" + letra;
                         estado = 4;
 
                         //si es letra
                     } else if (Character.isLetter(letra)) {
-                        System.out.println("Vino una letra");
-                        System.out.println("moviendose al estado 5");
+                        //System.out.println("Vino una letra");
+                        //System.out.println("moviendose al estado 5");
                         lexema = "" + letra;
                         estado = 5;
                     } else {
@@ -144,7 +156,6 @@ public class Analizador {
                         //estado=0;
 
                     }
-
                     break;
 
                 //Estado de aceptacion
@@ -152,8 +163,8 @@ public class Analizador {
                     //en esta condicion verificamos si es un signo de puntuacion
                     //se mantiene en el mismo estado si lo es, sino se acepta el lexema
                     if ((letra == '.') || (letra == ',') || (letra == ':') || (letra == ';')) {
-                        System.out.println("otro signo de puntuacion");
-                        System.out.println("sigo en el estado 1");
+                        //System.out.println("otro signo de puntuacion");
+                        //System.out.println("sigo en el estado 1");
                         lexema += letra;
                         estado = 1;
 
@@ -161,7 +172,10 @@ public class Analizador {
                     } else {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
-                        //arrLexemas.add(lexema);
+                        arrLexemas.add(lexema);
+                        arrSignosPuntuacion.add(lexema);
+                        cantLexemas++;
+                        cantSignosPunt++;
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -172,8 +186,8 @@ public class Analizador {
                 //Estado de aceptacion
                 case 2:
                     if ((letra == '+') || (letra == '-') || (letra == '*') || (letra == '/') || (letra == '%')) {
-                        System.out.println("otro operador aritmetico");
-                        System.out.println("sigo en el estado 2");
+                        //System.out.println("otro operador aritmetico");
+                        //System.out.println("sigo en el estado 2");
                         lexema += letra;
                         estado = 2;
 
@@ -182,6 +196,9 @@ public class Analizador {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
                         arrLexemas.add(lexema);
+                        arrOperadoresAritmeticos.add(lexema);
+                        cantLexemas++;
+                        cantOperadoresAr++;
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -191,15 +208,18 @@ public class Analizador {
                 //tercer estado de aceptacion
                 case 3:
                     if ((letra == '(') || (letra == ')') || (letra == '[') || (letra == ']') || (letra == '{') || (letra == '}')) {
-                        System.out.println("signo de agrupacion");
-                        System.out.println("sigo en el estado 3");
+                        //System.out.println("signo de agrupacion");
+                        //System.out.println("sigo en el estado 3");
                         lexema += letra;
                         estado = 3;
 
                     } else {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
-                        //arrLexemas.add(lexema);
+                        arrLexemas.add(lexema);
+                        arrSignosAgrupacion.add(lexema);
+                        cantLexemas++;
+                        cantSignosAgrupacion++;
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -211,8 +231,8 @@ public class Analizador {
                 //aqui se puede generar un error
                 case 4:
                     if (Character.isDigit(letra)) {
-                        System.out.println("Vino un digito: '" + letra + "'");
-                        System.out.println("Continuo en el estado 4");
+                        //System.out.println("Vino un digito: '" + letra + "'");
+                        //System.out.println("Continuo en el estado 4");
                         lexema += letra;
                         estado = 4;
                     } //Es un estado de aceptacion si vienen solo digitos
@@ -220,14 +240,18 @@ public class Analizador {
                         System.out.println("Lexema encontrado");
                         lexema += letra;
                         System.out.println(lexema);
+                        arrLexemas.add(lexema);
+                        arrNumeros.add(lexema);
+                        cantLexemas++;
+                        cantNumeros++;
                         indice--;
                         lexema = "";
                         estado = 0;
 
                         //si viene un punto se va a otro estado
                     } else if (letra == '.') {
-                        System.out.println("Vino un signo: '" + letra + "'");
-                        System.out.println("Moviendose al estado 6");
+                        //System.out.println("Vino un signo: '" + letra + "'");
+                        //System.out.println("Moviendose al estado 6");
                         lexema += letra;
                         estado = 6;
 
@@ -236,6 +260,8 @@ public class Analizador {
                         System.out.println("Error lexico");
                         lexema += letra;
                         System.out.println("Lexema: " + lexema);
+                        arrErrores.add(lexema);
+                        cantErroresLexicos++;
                         //indice--;
                         lexema = "";
                         estado = 0;
@@ -245,8 +271,8 @@ public class Analizador {
                 //Si viene un digito o una letra es un estado de aceptacion, de lo contrario es un error lexico
                 case 5:
                     if (Character.isLetterOrDigit(letra)) {
-                        System.out.println("Vino una letra o digito");
-                        System.out.println("moviendose al estado 7");
+                        //System.out.println("Vino una letra o digito");
+                        //System.out.println("moviendose al estado 7");
                         lexema += letra;
                         estado = 7;
                     } else {
@@ -254,6 +280,8 @@ public class Analizador {
                         System.out.println("Error lexico, caracter no valido");
                         lexema += letra;
                         System.out.println("error: " + lexema);
+                        arrErrores.add(lexema);
+                        cantErroresLexicos++;
                         //indice--;
                         lexema = "";
                         estado = 0;
@@ -264,8 +292,8 @@ public class Analizador {
                 //si viene un caracter diferente es un error
                 case 6:
                     if (Character.isDigit(letra)) {
-                        System.out.println("Vino un digito:");
-                        System.out.println("moviendose al estado 8");
+                        //System.out.println("Vino un digito:");
+                        //System.out.println("moviendose al estado 8");
                         lexema += letra;
                         estado = 8;
 
@@ -273,6 +301,8 @@ public class Analizador {
                         System.out.println("Error lexico, no sigue un digito despues del punto");
                         lexema += letra;
                         System.out.println("Error: " + lexema);
+                        arrErrores.add(lexema);
+                        cantErroresLexicos++;
                         //indice--;
                         lexema = "";
                         estado = 0;
@@ -283,14 +313,18 @@ public class Analizador {
                 //si viene un caracter distinto es un error
                 case 7:
                     if (Character.isLetterOrDigit(letra)) {
-                        System.out.println("vino una letra o digito de nuevo");
-                        System.out.println("Sigo en el estado 7");
+                        //System.out.println("vino una letra o digito de nuevo");
+                        //System.out.println("Sigo en el estado 7");
                         lexema += letra;
                         estado = 7;
                         //se evalua el estado de aceptacion
                     } else if (Character.isSpaceChar(letra)) {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
+                        arrIdentificadores.add(lexema);
+                        arrLexemas.add(lexema);
+                        cantLexemas++;
+                        cantIdentificadores++;
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -299,6 +333,8 @@ public class Analizador {
                         System.out.println("Error lexico");
                         lexema += letra;
                         System.out.println("Lexema: " + lexema + " incorrecto");
+                        arrErrores.add(lexema);
+                        cantErroresLexicos++;
                         //indice--;
                         lexema = "";
                         estado = 0;
@@ -310,13 +346,17 @@ public class Analizador {
                 //si viene un caracter distinto a un digito es un error
                 case 8:
                     if (Character.isDigit(letra)) {
-                        System.out.println("vino un digito");
-                        System.out.println("Sigo en el estado 8");
+                        //System.out.println("vino un digito");
+                        //System.out.println("Sigo en el estado 8");
                         lexema += letra;
                         estado = 8;
                     } else if (Character.isSpaceChar(letra)) {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
+                        arrLexemas.add(lexema);
+                        arrDecimales.add(lexema);
+                        cantLexemas++;
+                        cantDecimales++;
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -325,6 +365,8 @@ public class Analizador {
                         System.out.println("Error lexico");
                         lexema += letra;
                         System.out.println(lexema);
+                        arrErrores.add(lexema);
+                        cantErroresLexicos++;
                         indice--;
                         lexema = "";
                         estado = 0;
