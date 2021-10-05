@@ -19,18 +19,10 @@ public class Analizador {
     ArrayList<Lexema> arregloErrores;
     Lexema lex;
 
-    public static void main(String[] args) {
-
-        Scanner teclado = new Scanner(System.in);
-        int eleccion = 0;
-        Analizador analizador = new Analizador();
-        analizador.inicializarVariables();
-        //String palabraEntrada = " hola () 3.15 320 ab12 15f @";
-        String palabraEntrada= ".a..+a+-(a(ho12holaho@ho3.aho3.1aho3.1415f3.14aa15.45finMundo";
-        palabraEntrada = palabraEntrada + " ";
-        analizador.getPalabraEntrada(palabraEntrada);
-        analizador.mostrarResultados();
-
+    public void iniciarAnalizador(String palabraEntrada){
+        inicializarVariables();
+        getPalabraEntrada(palabraEntrada);
+        
     }
 
     public void inicializarVariables() {
@@ -40,29 +32,6 @@ public class Analizador {
         palabraLimpia = "";
         arregloLexemas = new ArrayList<Lexema>();
         arregloErrores = new ArrayList<Lexema>();
-
-    }
-
-    public void mostrarResultados() {
-        System.out.println("El tamano del arreglo de lexemas es: " + arregloLexemas.size());
-        System.out.println("El tamano del arreglo de errores es: " + arregloErrores.size());
-        String nombre = "";
-        String tipoToken = "";
-        String error = "";
-        System.out.println("aca vamos a mostrar el resultado");
-        for (int i = 0; i < arregloLexemas.size(); i++) {
-            nombre = "" + arregloLexemas.get(i).getLexema() + "\n";
-            tipoToken = "" + arregloLexemas.get(i).getNombreToken() + "\n";
-            System.out.println("Nombre: " + nombre + "token: " + tipoToken + " Posicion: " + (i + 1));
-
-        }
-        for (int i = 0; i < arregloErrores.size(); i++) {
-            error = "" + arregloErrores.get(i).getCadenaError() + "\n";
-            System.out.println("Cadena de Error: " + error + " Posicion: " + (i + 1));
-
-        }
-
-        //System.out.println(arregloLexemas.get(0).getLexema() + " token: " + arregloLexemas.get(0).nombreToken.toString());
 
     }
 
@@ -91,7 +60,6 @@ public class Analizador {
 
     }
 
-    
     public void analizarPalabra(String palabraLimpia) {
 
         for (indice = 0; indice < palabraLimpia.length(); indice++) {
@@ -358,4 +326,24 @@ public class Analizador {
 
     }
 
+    public ArrayList<Lexema> getArregloLexemas() {
+        return arregloLexemas;
+    }
+
+    public void setArregloLexemas(ArrayList<Lexema> arregloLexemas) {
+        this.arregloLexemas = arregloLexemas;
+    }
+
+
+
+    public ArrayList<Lexema> getArregloErrores() {
+        return arregloErrores;
+    }
+
+    public void setArregloErrores(ArrayList<Lexema> arregloErrores) {
+        this.arregloErrores = arregloErrores;
+    }
+
+    
+    
 }
