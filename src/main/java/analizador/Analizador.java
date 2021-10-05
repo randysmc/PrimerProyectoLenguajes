@@ -5,78 +5,64 @@
  */
 package analizador;
 
-import enums.Token;
+import enums.EnumToken;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Analizador {
 
-    ArrayList<String> arrIdentificadores;
-    ArrayList<String> arrNumeros;
-    ArrayList<String> arrDecimales;
-    ArrayList<String> arrErrores;
-    ArrayList<String> arrLexemas;
-    ArrayList<String> arrSignosPuntuacion;
-    ArrayList<String> arrOperadoresAritmeticos;
-    ArrayList<String> arrSignosAgrupacion;
-
     String lexema; //Aqui guardaremos el lexema que se forma al analizar cada palabra
     int estado; //Guardamos los distintos estados a los que el lexema se puede mover
     int indice;// llevamos el control del indice de la palabra que estamos analizando
     String palabraLimpia;
-    Token tipoToken;
-    int cantErroresLexicos;
-    int cantLexemas, cantNumeros, cantDecimales, cantSignosAgrupacion, cantOperadoresAr, cantSignosPunt, cantIdentificadores;
+    ArrayList<Lexema> arregloLexemas;
+    ArrayList<Lexema> arregloErrores;
+    Lexema lex;
 
     public static void main(String[] args) {
+
         Scanner teclado = new Scanner(System.in);
         int eleccion = 0;
         Analizador analizador = new Analizador();
-
-        while (eleccion != 1) {
-            analizador.inicializarVariables();
-            System.out.println("\n\nIngrese la palabra a descomponer");
-            String palabraEntrada = teclado.nextLine();
-            palabraEntrada = palabraEntrada + " ";
-            analizador.getPalabraEntrada(palabraEntrada);
-            analizador.mostrarResultados();
-        }
+        analizador.inicializarVariables();
+        //String palabraEntrada = " hola () 3.15 320 ab12 15f @";
+        String palabraEntrada= ".a..+a+-(a(ho12holaho@ho3.aho3.1aho3.1415f3.14aa15.45finMundo";
+        palabraEntrada = palabraEntrada + " ";
+        analizador.getPalabraEntrada(palabraEntrada);
+        analizador.mostrarResultados();
 
     }
 
     public void inicializarVariables() {
-        arrIdentificadores = new ArrayList();
-        arrNumeros = new ArrayList();
-        arrDecimales = new ArrayList();
-        arrErrores = new ArrayList();
-        arrSignosAgrupacion = new ArrayList();
-        arrOperadoresAritmeticos = new ArrayList();
-        arrSignosPuntuacion = new ArrayList();
-        arrLexemas = new ArrayList();
         lexema = "";
         estado = 0;
         indice = 0;
         palabraLimpia = "";
-        cantErroresLexicos = 0;
-        cantLexemas = 0;
-        cantNumeros = 0;
-        cantDecimales = 0;
-        cantSignosAgrupacion = 0;
-        cantOperadoresAr = 0;
-        cantSignosPunt = 0;
-        cantIdentificadores = 0;
+        arregloLexemas = new ArrayList<Lexema>();
+        arregloErrores = new ArrayList<Lexema>();
 
     }
 
     public void mostrarResultados() {
-        System.out.println("cantidad de errores: " + cantErroresLexicos);
-        System.out.println("cantidad de lexemas: " + cantLexemas);
-        System.out.println("cantidad de signos de puntuacion: " + cantSignosPunt);
-        System.out.println("cantidad de signos de agrupacion: " + cantSignosAgrupacion);
-        System.out.println("cantidad de operadores aritmeticos: " + cantOperadoresAr);
-        System.out.println("cantidad de numeros: " + cantNumeros);
-        System.out.println("cantidad de decimales: " + cantDecimales);
-        System.out.println("cantidad de identificadores: " + cantIdentificadores);
+        System.out.println("El tamano del arreglo de lexemas es: " + arregloLexemas.size());
+        System.out.println("El tamano del arreglo de errores es: " + arregloErrores.size());
+        String nombre = "";
+        String tipoToken = "";
+        String error = "";
+        System.out.println("aca vamos a mostrar el resultado");
+        for (int i = 0; i < arregloLexemas.size(); i++) {
+            nombre = "" + arregloLexemas.get(i).getLexema() + "\n";
+            tipoToken = "" + arregloLexemas.get(i).getNombreToken() + "\n";
+            System.out.println("Nombre: " + nombre + "token: " + tipoToken + " Posicion: " + (i + 1));
+
+        }
+        for (int i = 0; i < arregloErrores.size(); i++) {
+            error = "" + arregloErrores.get(i).getCadenaError() + "\n";
+            System.out.println("Cadena de Error: " + error + " Posicion: " + (i + 1));
+
+        }
+
+        //System.out.println(arregloLexemas.get(0).getLexema() + " token: " + arregloLexemas.get(0).nombreToken.toString());
 
     }
 
@@ -105,6 +91,7 @@ public class Analizador {
 
     }
 
+    
     public void analizarPalabra(String palabraLimpia) {
 
         for (indice = 0; indice < palabraLimpia.length(); indice++) {
@@ -151,9 +138,9 @@ public class Analizador {
                     } else {
 
                         System.out.println("Error lexico, aca no debe suceder :" + letra);
-                        cantErroresLexicos++;
-                        arrErrores.add("" + letra);
-                        //estado=0;
+                        lexema = " " + letra;
+                        llenarArregloErrores(lexema);
+                        estado = 0;
 
                     }
                     break;
@@ -172,10 +159,7 @@ public class Analizador {
                     } else {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
-                        arrLexemas.add(lexema);
-                        arrSignosPuntuacion.add(lexema);
-                        cantLexemas++;
-                        cantSignosPunt++;
+                        llenarArregloLexema(lexema, EnumToken.SIGNO_PUNTUACION);
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -195,10 +179,7 @@ public class Analizador {
                     } else {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
-                        arrLexemas.add(lexema);
-                        arrOperadoresAritmeticos.add(lexema);
-                        cantLexemas++;
-                        cantOperadoresAr++;
+                        llenarArregloLexema(lexema, EnumToken.OPERADOR_ARITMETICO);
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -216,10 +197,7 @@ public class Analizador {
                     } else {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
-                        arrLexemas.add(lexema);
-                        arrSignosAgrupacion.add(lexema);
-                        cantLexemas++;
-                        cantSignosAgrupacion++;
+                        llenarArregloLexema(lexema, EnumToken.SIGNO_AGRUPACION);
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -240,10 +218,7 @@ public class Analizador {
                         System.out.println("Lexema encontrado");
                         lexema += letra;
                         System.out.println(lexema);
-                        arrLexemas.add(lexema);
-                        arrNumeros.add(lexema);
-                        cantLexemas++;
-                        cantNumeros++;
+                        llenarArregloLexema(lexema, EnumToken.ENTERO);
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -260,8 +235,7 @@ public class Analizador {
                         System.out.println("Error lexico");
                         lexema += letra;
                         System.out.println("Lexema: " + lexema);
-                        arrErrores.add(lexema);
-                        cantErroresLexicos++;
+                        llenarArregloErrores(lexema);
                         //indice--;
                         lexema = "";
                         estado = 0;
@@ -280,8 +254,7 @@ public class Analizador {
                         System.out.println("Error lexico, caracter no valido");
                         lexema += letra;
                         System.out.println("error: " + lexema);
-                        arrErrores.add(lexema);
-                        cantErroresLexicos++;
+                        llenarArregloErrores(lexema);
                         //indice--;
                         lexema = "";
                         estado = 0;
@@ -301,8 +274,7 @@ public class Analizador {
                         System.out.println("Error lexico, no sigue un digito despues del punto");
                         lexema += letra;
                         System.out.println("Error: " + lexema);
-                        arrErrores.add(lexema);
-                        cantErroresLexicos++;
+                        llenarArregloErrores(lexema);
                         //indice--;
                         lexema = "";
                         estado = 0;
@@ -321,10 +293,7 @@ public class Analizador {
                     } else if (Character.isSpaceChar(letra)) {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
-                        arrIdentificadores.add(lexema);
-                        arrLexemas.add(lexema);
-                        cantLexemas++;
-                        cantIdentificadores++;
+                        llenarArregloLexema(lexema, EnumToken.IDENTIFICADOR);
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -333,8 +302,7 @@ public class Analizador {
                         System.out.println("Error lexico");
                         lexema += letra;
                         System.out.println("Lexema: " + lexema + " incorrecto");
-                        arrErrores.add(lexema);
-                        cantErroresLexicos++;
+                        llenarArregloErrores(lexema);
                         //indice--;
                         lexema = "";
                         estado = 0;
@@ -352,11 +320,9 @@ public class Analizador {
                         estado = 8;
                     } else if (Character.isSpaceChar(letra)) {
                         System.out.println("Lexema encontrado");
-                        System.out.println(lexema);
-                        arrLexemas.add(lexema);
-                        arrDecimales.add(lexema);
-                        cantLexemas++;
-                        cantDecimales++;
+
+                        llenarArregloLexema(lexema, EnumToken.DECIMAL);
+
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -364,9 +330,8 @@ public class Analizador {
                     } else {
                         System.out.println("Error lexico");
                         lexema += letra;
-                        System.out.println(lexema);
-                        arrErrores.add(lexema);
-                        cantErroresLexicos++;
+                        //System.out.println(lexema);
+                        llenarArregloErrores(lexema);
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -379,6 +344,18 @@ public class Analizador {
             }
 
         }
+    }
+
+    public void llenarArregloLexema(String lexema, EnumToken tipoToken) {
+        lex = new Lexema(lexema, tipoToken);
+        arregloLexemas.add(lex);
+
+    }
+
+    public void llenarArregloErrores(String cadenaError) {
+        lex = new Lexema(cadenaError);
+        arregloErrores.add(lex);
+
     }
 
 }
