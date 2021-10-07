@@ -20,11 +20,11 @@ public class Analizador {
     Lexema lex;
     int contadorId, contadorEnteros, contadorDec, contadorSigAg, contadorOpAr, contadorSigPu;
 
-    public void iniciarAnalizador(String palabraEntrada){
+    public void iniciarAnalizador(String palabraEntrada) {
         inicializarVariables();
-        palabraLimpia=getPalabraEntrada(palabraEntrada);
+        palabraLimpia = getPalabraEntrada(palabraEntrada);
         analizarPalabra(palabraLimpia);
-        
+
     }
 
     public void inicializarVariables() {
@@ -34,12 +34,12 @@ public class Analizador {
         palabraLimpia = "";
         arregloLexemas = new ArrayList<Lexema>();
         arregloErrores = new ArrayList<Lexema>();
-        contadorId=0;
-        contadorEnteros=0;
-        contadorDec=0;
-        contadorSigAg=0;
-        contadorOpAr=0;
-        contadorSigPu=0;
+        contadorId = 0;
+        contadorEnteros = 0;
+        contadorDec = 0;
+        contadorSigAg = 0;
+        contadorOpAr = 0;
+        contadorSigPu = 0;
 
     }
 
@@ -52,13 +52,13 @@ public class Analizador {
             //Sentencia para elimiar caracteres extras que puedan venir en la palabra, como 
             //tab, retorno carro, salto de linea etc...
             switch (letra) {
-                
+
                 case '\r':
                 case '\t':
                 case '\n':
                 case '\b':
                 case '\f':
-                //case ' ':
+                    //case ' ':
 
                     break;
                 default:
@@ -106,15 +106,14 @@ public class Analizador {
 
                         //si es letra
                     } else if (Character.isLetter(letra)) {
-                        System.out.println("Vino una letra: '"+ letra +"', me muevo al estado 5");
+                        System.out.println("Vino una letra: '" + letra + "', me muevo al estado 5");
                         lexema = "" + letra;
                         estado = 5;
                     } else {
                         lexema = "" + letra;
-                        System.out.println("Encontramos un error Lexico: '" + letra+"', regreso al estado 0");
+                        System.out.println("Encontramos un error Lexico: '" + letra + "', regreso al estado 0");
                         llenarArregloErrores(lexema);
                         estado = 0;
-                        
 
                     }
                     break;
@@ -124,15 +123,15 @@ public class Analizador {
                     //en esta condicion verificamos si es un signo de puntuacion
                     //se mantiene en el mismo estado si lo es, sino se acepta el lexema
                     if ((letra == '.') || (letra == ',') || (letra == ':') || (letra == ';')) {
-                        System.out.println("Vino otro signo de puntuacion: '"+letra+"', sigo en el estado 1");                   
+                        System.out.println("Vino otro signo de puntuacion: '" + letra + "', sigo en el estado 1");
                         lexema += letra;
                         estado = 1;
 
                         //primer estado de aceptacion
                     } else {
-                        System.out.println("Lexema encontrado: " +lexema);
-                        llenarArregloLexema(lexema, EnumToken.SIGNO_PUNTUACION);
+                        System.out.println("Lexema encontrado: " + lexema);
                         contadorSigPu++;
+                        llenarArregloLexema(lexema, EnumToken.SIGNO_PUNTUACION, contadorSigPu);
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -143,15 +142,16 @@ public class Analizador {
                 //Estado de aceptacion
                 case 2:
                     if ((letra == '+') || (letra == '-') || (letra == '*') || (letra == '/') || (letra == '%')) {
-                        System.out.println("Vino otro operador aritmetico: '"+letra+"', sigo en el estado 2");
+                        System.out.println("Vino otro operador aritmetico: '" + letra + "', sigo en el estado 2");
                         lexema += letra;
                         estado = 2;
 
                         //segundo estado de aceptacion
                     } else {
-                        System.out.println("Lexema encontrado: " +lexema);
-                        llenarArregloLexema(lexema, EnumToken.OPERADOR_ARITMETICO);
+                        System.out.println("Lexema encontrado: " + lexema);
                         contadorOpAr++;
+                        llenarArregloLexema(lexema, EnumToken.OPERADOR_ARITMETICO, contadorOpAr);
+
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -161,14 +161,15 @@ public class Analizador {
                 //tercer estado de aceptacion
                 case 3:
                     if ((letra == '(') || (letra == ')') || (letra == '[') || (letra == ']') || (letra == '{') || (letra == '}')) {
-                        System.out.println("Vino otro signo de agrupacion: '"+letra+"', sigo en el estado 3");
+                        System.out.println("Vino otro signo de agrupacion: '" + letra + "', sigo en el estado 3");
                         lexema += letra;
                         estado = 3;
 
                     } else {
-                        System.out.println("Lexema encontrado");
-                        System.out.println(lexema);
-                        llenarArregloLexema(lexema, EnumToken.SIGNO_AGRUPACION);
+                        System.out.println("Lexema encontrado: " + lexema);
+                        contadorSigAg++;
+                        llenarArregloLexema(lexema, EnumToken.SIGNO_AGRUPACION, contadorSigAg);
+
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -189,7 +190,9 @@ public class Analizador {
                         System.out.println("Lexema encontrado");
                         lexema += letra;
                         System.out.println(lexema);
-                        llenarArregloLexema(lexema, EnumToken.ENTERO);
+                        contadorEnteros++;
+                        llenarArregloLexema(lexema, EnumToken.ENTERO, contadorEnteros);
+                        contadorEnteros++;
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -264,7 +267,9 @@ public class Analizador {
                     } else if (Character.isSpaceChar(letra)) {
                         System.out.println("Lexema encontrado");
                         System.out.println(lexema);
-                        llenarArregloLexema(lexema, EnumToken.IDENTIFICADOR);
+                        contadorId++;
+                        llenarArregloLexema(lexema, EnumToken.IDENTIFICADOR, contadorId);
+
                         indice--;
                         lexema = "";
                         estado = 0;
@@ -291,8 +296,8 @@ public class Analizador {
                         estado = 8;
                     } else if (Character.isSpaceChar(letra)) {
                         System.out.println("Lexema encontrado");
-
-                        llenarArregloLexema(lexema, EnumToken.DECIMAL);
+                        contadorDec++;
+                        llenarArregloLexema(lexema, EnumToken.DECIMAL, contadorDec);
 
                         indice--;
                         lexema = "";
@@ -317,8 +322,8 @@ public class Analizador {
         }
     }
 
-    public void llenarArregloLexema(String lexema, EnumToken tipoToken) {
-        lex = new Lexema(lexema, tipoToken);
+    public void llenarArregloLexema(String lexema, EnumToken tipoToken, int apariciones) {
+        lex = new Lexema(lexema, tipoToken,apariciones);
         arregloLexemas.add(lex);
 
     }
@@ -337,8 +342,6 @@ public class Analizador {
         this.arregloLexemas = arregloLexemas;
     }
 
-
-
     public ArrayList<Lexema> getArregloErrores() {
         return arregloErrores;
     }
@@ -347,6 +350,44 @@ public class Analizador {
         this.arregloErrores = arregloErrores;
     }
 
-    
-    
+    public int getContadorId() {
+        return contadorId;
+    }
+
+    public void setContadorId(int contadorId) {
+        this.contadorId = contadorId;
+    }
+
+    public int getContadorEnteros() {
+        return contadorEnteros;
+    }
+
+    public void setContadorEnteros(int contadorEnteros) {
+        this.contadorEnteros = contadorEnteros;
+    }
+
+    public int getContadorDec() {
+        return contadorDec;
+    }
+
+    public void setContadorDec(int contadorDec) {
+        this.contadorDec = contadorDec;
+    }
+
+    public int getContadorSigAg() {
+        return contadorSigAg;
+    }
+
+    public void setContadorSigAg(int contadorSigAg) {
+        this.contadorSigAg = contadorSigAg;
+    }
+
+    public int getContadorOpAr() {
+        return contadorOpAr;
+    }
+
+    public void setContadorOpAr(int contadorOpAr) {
+        this.contadorOpAr = contadorOpAr;
+    }
+
 }

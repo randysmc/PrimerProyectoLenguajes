@@ -7,11 +7,7 @@ package controladores;
 
 import analizador.Analizador;
 import analizador.Lexema;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,6 +22,7 @@ public class ControladorVentana {
     ControladorLexema contrLexema;
     private String textoEntrada;
     private JTextArea textArArchivo;
+    String nombreArchivo;
 
   
 
@@ -57,8 +54,8 @@ public class ControladorVentana {
      JFileChooser fc = new JFileChooser(); //Ventana donde podremos escoger nuestro archivo
      fc.showOpenDialog(null);//abre el cuadro de dialogo con un campo nulo
      File archivo = fc.getSelectedFile();//file para seleccionar
-     String nombre = archivo.getParent();
-        System.out.println(nombre);
+     nombreArchivo = archivo.getName();
+     //System.out.println(nombre);
      
         //System.out.println(archivos);  
         try {
@@ -79,6 +76,29 @@ public class ControladorVentana {
             
         } 
         return textoEntrada;
+        
+    }
+    
+    public void modificarArchivo(String archivo){
+        //String nombreArchivo = textFiIngreseNombre.getText();
+        String contenidoArchivo = archivo;        
+        String carpeta = System.getProperty("user.dir"); //directorio activo del usuario
+        String direccion = carpeta + "/" + nombreArchivo + ".txt";
+        FileWriter ubicacion = null;
+
+        try {
+            ubicacion = new FileWriter(direccion,true);
+        } catch (IOException ex) {
+            Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex); //Controla estado de archivo y la info que maneja el usuario
+        }
+
+        BufferedWriter escritor = new BufferedWriter(ubicacion);
+        try {
+            escritor.write(archivo);
+            escritor.close(); // cerramos el escritor
+        } catch (IOException ex) {
+            Logger.getLogger(VentanaPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
 

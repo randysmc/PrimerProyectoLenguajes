@@ -18,9 +18,10 @@ public class Lexema {
     int posicion;
     int cantidadApariciones;
 
-    public Lexema(String lexema, EnumToken nombreToken) {
+    public Lexema(String lexema, EnumToken nombreToken, int cantidadApariciones) {
         this.lexema = lexema;
         this.nombreToken = nombreToken;
+        this.cantidadApariciones=cantidadApariciones;
         //this.posicion = posicion;
     }
 

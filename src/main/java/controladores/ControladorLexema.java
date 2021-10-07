@@ -22,36 +22,6 @@ public class ControladorLexema {
 
     }
 
-    public void algo() {
-        System.out.println("llegue aqui");
-        int uno = analizador.getArregloErrores().size() + 1;
-        System.out.println(uno);
-    }
-
-    /*   public void mostrarTabla(JTable tabla){
-                   int errores = analizador.getArregloErrores().size();
-                   System.out.println(errores);
-
-        String matriz[][] = new String[1][3];
-        for (int i = 0; i < 1; i++) {
-            
-            matriz[i][0]="paca";
-            matriz[i][1]="pedo";
-            //String.valueOf()
-            matriz[i][2]="15";
-            
-            //matriz[i][0]=analizador.getArregloLexemas().get(i).getLexema();
-            //matriz[i][1]=analizador.getArregloLexemas().get(i).getNombreToken().toString();
-            //String.valueOf()
-           // matriz[i][2]=String.valueOf(analizador.getArregloLexemas().get(i).getPosicion());
-        }
-        tabla.setModel(new javax.swing.table.DefaultTableModel(
-            matriz,
-            new String [] {
-                "Lexema", "Token", "Cantidad Apariciones"
-            }
-        )); 
-    }*/
     public void getTablaLexemas(JTable tabla) {
         //System.out.println(textoBusqueda);
         //int tamano =1;
@@ -61,10 +31,10 @@ public class ControladorLexema {
         //System.out.println("Errores tamanito: " +errores);
         String matriz[][] = new String[tamano][4];
         for (int i = 0; i < tamano; i++) {
-            matriz[i][0] = analizador.getArregloLexemas().get(i).getNombreToken().toString();
+            matriz[i][0] = String.valueOf((i + 1));
             matriz[i][1] = analizador.getArregloLexemas().get(i).getLexema();
-            matriz[i][2] = String.valueOf((i + 1));
-            matriz[i][3] = "pedo";
+            matriz[i][2] = analizador.getArregloLexemas().get(i).getNombreToken().toString();
+            matriz[i][3] = String.valueOf(analizador.getArregloLexemas().get(i).getCantidadApariciones());
         }
         tabla.setModel(new javax.swing.table.DefaultTableModel(
                 matriz,

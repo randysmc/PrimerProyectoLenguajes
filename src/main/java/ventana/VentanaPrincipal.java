@@ -9,7 +9,9 @@ import analizador.Analizador;
 import analizador.Lexema;
 import controladores.ControladorLexema;
 import controladores.ControladorVentana;
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,6 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.Highlighter;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
 
@@ -26,6 +31,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     //ArrayList<Lexema> arregloLexemas;
     //ArrayList<Lexema> arregloErrores;
     ControladorVentana contrVentana;
+    //private Object DefaultHighlighter;
+    //private Object DefaultHighlighter;
     
 
     public VentanaPrincipal() {
@@ -36,9 +43,30 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     public void inicio() {
         this.setVisible(true);
-        contrVentana  = new ControladorVentana();
+        contrVentana = new ControladorVentana();
         //contrLexema = new ControladorLexema();
     }
+    /*public void buscarpalabra(JTextArea area1, String texto) {
+        if (texto.length() >= 1) {
+            DefaultHighlighter.DefaultHighlightPainter highlightPainter = new DefaultHighlighter.DefaultHighlightPainter(Color.GREEN);
+            Highlighter h = area1.getHighlighter();
+            h.removeAllHighlights();
+            String text = area1.getText();
+            String caracteres = texto;
+            Pattern p = Pattern.compile("(?i)" + caracteres);
+            Matcher m = p.matcher(text);
+            while (m.find()) {
+                try {
+                    h.addHighlight(m.start(), m.end(), highlightPainter);
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(color.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(area1, "la palabra a buscar no puede ser vacia");
+        }
+    }
+    */
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -121,6 +149,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         });
 
         btnModificarArchivo.setText("Modificar");
+        btnModificarArchivo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModificarArchivoActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Cargar un Archivo");
 
@@ -345,23 +378,30 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         //textArArchivo.setText("");
     }//GEN-LAST:event_btnAnalizarActionPerformed
 
+    
+    
+    
     private void btnBuscarPatronActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPatronActionPerformed
 
-        String textoBusqueda = textFBuscarPatron.getText()+" ";
+        String textoBusqueda = textFBuscarPatron.getText() + " ";
         //String texto = getTextoArea();
         contrVentana.buscarPatron(textoBusqueda);
-
 
     }//GEN-LAST:event_btnBuscarPatronActionPerformed
 
     private void btnMostrarLexemasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarLexemasActionPerformed
         contrVentana.obtenerTablaLex(tablaReportes);
-        
+
     }//GEN-LAST:event_btnMostrarLexemasActionPerformed
 
     private void btnMostrarErroresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarErroresActionPerformed
         contrVentana.obtenerTablaErr(tablaErrores);
     }//GEN-LAST:event_btnMostrarErroresActionPerformed
+
+    private void btnModificarArchivoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarArchivoActionPerformed
+        String texto = getTextoArea();
+        contrVentana.modificarArchivo(texto);
+    }//GEN-LAST:event_btnModificarArchivoActionPerformed
     public String getTextoArea() {
         String texto = textArArchivo.getText() + " ";
         return texto;
@@ -415,7 +455,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         this.panelArchivo = jPanel2;
     }
 
-
     public JScrollPane getjScrollPane1() {
         return jScrollPane1;
     }
@@ -423,7 +462,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     public void setjScrollPane1(JScrollPane jScrollPane1) {
         this.jScrollPane1 = jScrollPane1;
     }
-
 
     public JLabel getLabelIngresePalabra() {
         return labelIngresePalabra;
